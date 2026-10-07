@@ -1,0 +1,181 @@
+:root {
+  color: #f4efe4;
+  background: #07141f;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.45;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, #16324a, #07141f 55%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.screen {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.hero-header h1,
+.screen h1 {
+  margin: 0 0 8px;
+  font-size: 2.4rem;
+}
+
+.eyebrow {
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #d7b56d;
+  font-size: 0.75rem;
+}
+
+.panel {
+  background: rgba(8, 24, 36, 0.82);
+  border: 1px solid #2d5a73;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+button {
+  background: #12384c;
+  color: #f4efe4;
+  border: 1px solid #4c8aa8;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+button.primary {
+  background: #c9782a;
+  border-color: #efc07a;
+  color: #1a1006;
+  font-weight: 700;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #efc07a;
+  outline-offset: 2px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+input,
+select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #4c8aa8;
+  background: #0b2230;
+  color: #f4efe4;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+[role='alert'] {
+  color: #ffb4a8;
+}
+
+.match-root {
+  position: fixed;
+  inset: 0;
+  background: #07141f;
+}
+
+.match-canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.match-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.match-hud {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.match-hud p {
+  margin: 0;
+  background: rgba(8, 24, 36, 0.82);
+  border: 1px solid #2d5a73;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.match-hud button {
+  pointer-events: auto;
+}
+
+.match-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(7, 20, 31, 0.72);
+  text-align: center;
+  padding: 24px;
+}
+
+.touch-controls {
+  position: absolute;
+  z-index: 2;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, 64px);
+  gap: 8px;
+}
+
+.touch-controls button {
+  min-height: 56px;
+  touch-action: none;
+}
