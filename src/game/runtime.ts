@@ -9,6 +9,7 @@ import type { GameConfig } from './config'
 export type MatchHud = {
   score: number
   remainingSeconds: number
+  elapsedSeconds: number
   playerHp: number
   playerMaxHp: number
   paused: boolean
@@ -176,6 +177,7 @@ export class MatchRuntime {
     this.onHud({
       score: snapshot.score,
       remainingSeconds: snapshot.remainingSeconds,
+      elapsedSeconds: snapshot.elapsedSeconds,
       playerHp: snapshot.player.hp,
       playerMaxHp: snapshot.player.maxHp,
       paused: this.paused,
@@ -194,6 +196,11 @@ export class MatchRuntime {
         for (let i = 0; i < steps; i += 1) {
           this.world.step(SIM_STEP_SECONDS)
         }
+        this.emitHud()
+      },
+      endMatch: (reason) => {
+        this.world.forceEnd(reason)
+        this.emitHud()
       },
     }
   }
@@ -206,6 +213,7 @@ declare global {
       snapshot: () => WorldSnapshot
       setPaused: (paused: boolean) => void
       step: (seconds: number) => void
+      endMatch: (reason: 'time' | 'death') => void
     }
   }
 }

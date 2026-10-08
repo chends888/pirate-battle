@@ -1,7 +1,8 @@
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { fetchMatchHistory, fetchRanking } from '../api/client'
 import { LOCAL_PLAYER_NAME } from '../mocks/fixtures'
+import { queryClient } from '../queryClient'
 import {
   loadNetworkScenario,
   NETWORK_SCENARIOS,
@@ -9,8 +10,6 @@ import {
   type NetworkScenario,
 } from '../mocks/scenarios'
 import { resetMockStore } from '../mocks/store'
-
-const queryClient = new QueryClient()
 
 type MainTab = 'ranking' | 'history'
 
@@ -24,7 +23,6 @@ export function MainMenu({ onPlay, onOptions }: Props) {
   const [scenario, setScenario] = useState<NetworkScenario>(loadNetworkScenario)
 
   return (
-    <QueryClientProvider client={queryClient}>
       <main className="screen">
         <header className="hero-header">
           <p className="eyebrow">Jungle Gaming challenge</p>
@@ -108,7 +106,6 @@ export function MainMenu({ onPlay, onOptions }: Props) {
           <p>Playing as {LOCAL_PLAYER_NAME}. Confirmed records survive refresh.</p>
         </section>
       </main>
-    </QueryClientProvider>
   )
 }
 

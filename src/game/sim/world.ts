@@ -68,6 +68,18 @@ export class World {
     this.intent = intent
   }
 
+  forceEnd(reason: 'time' | 'death'): void {
+    if (this.status !== 'running') return
+    this.status = 'ended'
+    this.endReason = reason
+    if (reason === 'time') {
+      this.elapsedSeconds = this.config.sessionTimeSeconds
+    } else {
+      this.player.hp = 0
+      this.player.alive = false
+    }
+  }
+
   step(dt: number): void {
     if (this.status !== 'running') return
 

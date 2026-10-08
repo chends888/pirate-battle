@@ -51,6 +51,7 @@ export function OptionsScreen({ onBack }: Props) {
       <h1>Options</h1>
       <form
         className="panel"
+        noValidate
         onSubmit={(event) => {
           event.preventDefault()
           handleSave()
@@ -59,6 +60,7 @@ export function OptionsScreen({ onBack }: Props) {
         <label>
           Game session time (seconds)
           <input
+            name="sessionTimeSeconds"
             type="number"
             min={SESSION_TIME_MIN_SECONDS}
             max={SESSION_TIME_MAX_SECONDS}
@@ -75,6 +77,7 @@ export function OptionsScreen({ onBack }: Props) {
         <label>
           Enemy spawn time (seconds)
           <input
+            name="enemySpawnIntervalSeconds"
             type="number"
             min={SPAWN_INTERVAL_MIN_SECONDS}
             max={SPAWN_INTERVAL_MAX_SECONDS}

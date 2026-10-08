@@ -4,17 +4,21 @@ import {
   MatchRuntime,
   type MatchHud,
 } from '../game/runtime'
+import type { CompletedMatch } from '../match/completed'
+import { LOCAL_PLAYER_ID } from '../mocks/fixtures'
 import { applyOptionsToConfig, loadPlayerOptions } from '../persist/playerOptions'
 
 type Props = {
   onLeave: () => void
+  onFinished: (match: CompletedMatch) => void
 }
 
 type LoadState = 'loading' | 'ready' | 'error'
 
-export function MatchScreen({ onLeave }: Props) {
+export function MatchScreen({ onLeave, onFinished }: Props) {
   const hostRef = useRef<HTMLDivElement | null>(null)
   const runtimeRef = useRef<MatchRuntime | null>(null)
+  const finishedRef = useRef(false)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [error, setError] = useState<string | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
@@ -26,15 +30,37 @@ export function MatchScreen({ onLeave }: Props) {
 
     let cancelled = false
     let runtime: MatchRuntime | null = null
+    finishedRef.current = false
     setLoadState('loading')
     setError(null)
 
     const config = applyOptionsToConfig(DEFAULT_GAME_CONFIG, loadPlayerOptions())
+    const matchId = crypto.randomUUID()
 
     void (async () => {
       try {
         runtime = await MatchRuntime.create(host, config, (next) => {
-          if (!cancelled) setHud(next)
+          if (cancelled) return
+          setHud(next)
+          if (
+            next.status === 'ended' &&
+            (next.endReason === 'time' || next.endReason === 'death') &&
+            !finishedRef.current
+          ) {
+            finishedRef.current = true
+            onFinished({
+              matchId,
+              playerId: LOCAL_PLAYER_ID,
+              score: next.score,
+              durationSeconds: next.elapsedSeconds,
+              reason: next.endReason,
+              finishedAt: new Date().toISOString(),
+              config: {
+                sessionTimeSeconds: config.sessionTimeSeconds,
+                enemySpawnIntervalSeconds: config.enemySpawnIntervalSeconds,
+              },
+            })
+          }
         })
         if (cancelled) {
           runtime.destroy()
@@ -55,7 +81,7 @@ export function MatchScreen({ onLeave }: Props) {
       runtimeRef.current = null
       if (window.__game) delete window.__game
     }
-  }, [reloadKey])
+  }, [onFinished, reloadKey])
 
   function touch(partial: Parameters<MatchRuntime['setTouch']>[0], active: boolean) {
     const next = Object.fromEntries(
@@ -122,16 +148,6 @@ export function MatchScreen({ onLeave }: Props) {
           </button>
           <button type="button" onClick={onLeave}>
             Abandon match
-          </button>
-        </div>
-      ) : null}
-
-      {hud?.status === 'ended' ? (
-        <div className="match-overlay">
-          <h1>{hud.endReason === 'time' ? 'Time is up' : 'Your ship sank'}</h1>
-          <p>Score {hud.score}</p>
-          <button type="button" className="primary" onClick={onLeave}>
-            Main Menu
           </button>
         </div>
       ) : null}
