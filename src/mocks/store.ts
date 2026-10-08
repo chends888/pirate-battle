@@ -2,6 +2,13 @@ import type { MatchRecord } from '../api/types'
 import { LOCAL_PLAYER_ID, rankingFixtures } from './fixtures'
 
 const CONFIRMED_KEY = 'pirate-battle:confirmed-matches'
+const delayedSubmitIds = new Set<string>()
+
+export function shouldDelaySubmit(matchId: string): boolean {
+  if (delayedSubmitIds.has(matchId)) return false
+  delayedSubmitIds.add(matchId)
+  return true
+}
 
 function loadConfirmed(): MatchRecord[] {
   try {
@@ -59,4 +66,5 @@ export function upsertMatch(record: MatchRecord): MatchRecord {
 
 export function resetMockStore(): void {
   localStorage.removeItem(CONFIRMED_KEY)
+  delayedSubmitIds.clear()
 }

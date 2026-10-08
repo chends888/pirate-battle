@@ -2,7 +2,7 @@ import { Application } from 'pixi.js'
 import { GAME_KEY_CODES, InputController } from './input/bindings'
 import { ArenaView } from './pixi/arenaView'
 import { loadMatchAssets } from './pixi/assets'
-import { SIM_STEP_SECONDS, type WorldSnapshot } from './sim/types'
+import { SIM_STEP_SECONDS, type Intent, type WorldSnapshot } from './sim/types'
 import { World } from './sim/world'
 import type { GameConfig } from './config'
 
@@ -202,6 +202,8 @@ export class MatchRuntime {
         this.world.forceEnd(reason)
         this.emitHud()
       },
+      setIntent: (intent) => this.world.setIntent(intent),
+      spawnEnemyAt: (kind, x, y) => this.world.spawnEnemyAt(kind, x, y),
     }
   }
 }
@@ -214,6 +216,12 @@ declare global {
       setPaused: (paused: boolean) => void
       step: (seconds: number) => void
       endMatch: (reason: 'time' | 'death') => void
+      setIntent: (intent: Intent) => void
+      spawnEnemyAt: (
+        kind: 'chaser' | 'shooter',
+        x: number,
+        y: number,
+      ) => import('./sim/types').Ship
     }
   }
 }

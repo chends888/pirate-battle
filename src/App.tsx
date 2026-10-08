@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useCallback, useState } from 'react'
 import type { CompletedMatch } from './match/completed'
+import { saveLastMatchResult } from './persist/playerOptions'
 import { queryClient } from './queryClient'
 import { MainMenu } from './screens/MainMenu'
 import { MatchScreen } from './screens/MatchScreen'
@@ -13,6 +14,7 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('menu')
   const [result, setResult] = useState<CompletedMatch | null>(null)
   const handleFinished = useCallback((match: CompletedMatch) => {
+    saveLastMatchResult({ ...match, submitted: false })
     setResult(match)
     setScreen('result')
   }, [])

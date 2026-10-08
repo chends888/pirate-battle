@@ -9,7 +9,9 @@ import {
   type NetworkScenario,
 } from '../mocks/scenarios'
 import { resetMockStore } from '../mocks/store'
+import { formatDuration, formatReason } from '../format'
 import { loadPendingMatches } from '../persist/pendingMatches'
+import { loadLastMatchResult } from '../persist/playerOptions'
 import { RecordsPanel } from './RecordsPanel'
 
 type MainTab = 'ranking' | 'history'
@@ -24,6 +26,7 @@ export function MainMenu({ onPlay, onOptions, onRetryPending }: Props) {
   const [tab, setTab] = useState<MainTab>('ranking')
   const [scenario, setScenario] = useState<NetworkScenario>(loadNetworkScenario)
   const pending = loadPendingMatches()[0] ?? null
+  const lastResult = loadLastMatchResult()
 
   return (
     <main className="screen">
@@ -41,6 +44,23 @@ export function MainMenu({ onPlay, onOptions, onRetryPending }: Props) {
           Options
         </button>
       </div>
+
+      {lastResult ? (
+        <section className="panel" data-testid="last-result" aria-labelledby="last-result-heading">
+          <h2 id="last-result-heading">Last match</h2>
+          <p>
+            Score {lastResult.score} — {formatDuration(lastResult.durationSeconds)} —{' '}
+            {formatReason(lastResult.reason)}
+          </p>
+          <p>{lastResult.submitted ? 'Recorded.' : 'Not recorded yet.'}</p>
+          <button
+            type="button"
+            onClick={() => onRetryPending(lastResult)}
+          >
+            View result
+          </button>
+        </section>
+      ) : null}
 
       {pending ? (
         <section className="panel" aria-labelledby="pending-heading">

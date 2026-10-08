@@ -1,3 +1,4 @@
+import type { CompletedMatch } from '../match/completed'
 import {
   clampSessionTime,
   clampSpawnInterval,
@@ -15,11 +16,7 @@ export type PlayerOptions = {
 
 export type MatchEndReason = 'time' | 'death' | 'abandoned'
 
-export type LastMatchResult = {
-  score: number
-  durationSeconds: number
-  reason: Exclude<MatchEndReason, 'abandoned'>
-  finishedAt: string
+export type LastMatchResult = CompletedMatch & {
   submitted: boolean
 }
 

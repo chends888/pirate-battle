@@ -4,6 +4,7 @@ import { loadNetworkScenario } from './scenarios'
 import {
   listHistoryRecords,
   listRankingRecords,
+  shouldDelaySubmit,
   upsertMatch,
 } from './store'
 import type { CreateMatchPayload, MatchRecord, Paginated } from '../api/types'
@@ -71,10 +72,17 @@ export const handlers = [
   }),
 
   http.post('/api/history', async ({ request }) => {
-    const failure = await applyScenario('submit')
-    if (failure) return failure
-
     const payload = (await request.json()) as CreateMatchPayload
+    const scenario = loadNetworkScenario()
+
+    if (scenario === 'slow') {
+      await delay(1200)
+    }
+
+    if (scenario === 'timeout-on-submit' && shouldDelaySubmit(payload.matchId)) {
+      await delay(9000)
+    }
+
     const record: MatchRecord = {
       ...payload,
       playerName: LOCAL_PLAYER_NAME,

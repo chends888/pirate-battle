@@ -68,6 +68,27 @@ export class World {
     this.intent = intent
   }
 
+  spawnEnemyAt(kind: 'chaser' | 'shooter', x: number, y: number): Ship {
+    const spec = kind === 'chaser' ? this.config.chaser : this.config.shooter
+    const enemy: Ship = {
+      id: `${kind}-${this.nextEnemyId}`,
+      kind,
+      x,
+      y,
+      rotation: angleTo(x, y, this.player.x, this.player.y),
+      radius: spec.radius,
+      hp: spec.maxHp,
+      maxHp: spec.maxHp,
+      alive: true,
+      frontalCooldown: 0,
+      leftCooldown: 0,
+      rightCooldown: 0,
+    }
+    this.nextEnemyId += 1
+    this.enemies.push(enemy)
+    return enemy
+  }
+
   forceEnd(reason: 'time' | 'death'): void {
     if (this.status !== 'running') return
     this.status = 'ended'
@@ -140,23 +161,7 @@ export class World {
       this.spawnElapsed -= interval
       const point = this.findSpawnPoint()
       if (!point) continue
-      const kind = this.pickEnemyKind()
-      const spec = kind === 'chaser' ? this.config.chaser : this.config.shooter
-      this.enemies.push({
-        id: `${kind}-${this.nextEnemyId}`,
-        kind,
-        x: point.x,
-        y: point.y,
-        rotation: angleTo(point.x, point.y, this.player.x, this.player.y),
-        radius: spec.radius,
-        hp: spec.maxHp,
-        maxHp: spec.maxHp,
-        alive: true,
-        frontalCooldown: 0.35,
-        leftCooldown: 0,
-        rightCooldown: 0,
-      })
-      this.nextEnemyId += 1
+      this.spawnEnemyAt(this.pickEnemyKind(), point.x, point.y)
     }
   }
 

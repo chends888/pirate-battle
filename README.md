@@ -51,3 +51,11 @@ Ranking is paginated (5 per page) and only includes matches with the same sessio
 ## Network scenarios
 
 On the main menu, pick a scenario (`success`, `empty`, `slow`, `error`, `timeout-on-submit`) and reset mock records. Confirmed submissions persist after refresh.
+
+To reproduce a submit timeout without duplicates: set **timeout-on-submit**, finish a match, wait for the result error, then **Retry recording**. The first POST is delayed past the Axios 8s timeout; the retry uses the same `matchId` and does not create a second history row.
+
+## Last result
+
+The last completed match is stored in `localStorage` and shown on the main menu after refresh.
+
+There are no environment variables. See `PERFORMANCE.md` for how to capture FPS and leak checks.

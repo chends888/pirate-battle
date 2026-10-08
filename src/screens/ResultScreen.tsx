@@ -6,7 +6,7 @@ import {
   removePendingMatch,
   upsertPendingMatch,
 } from '../persist/pendingMatches'
-import { saveLastMatchResult } from '../persist/playerOptions'
+import { loadLastMatchResult, saveLastMatchResult } from '../persist/playerOptions'
 import { queryClient } from '../queryClient'
 
 type Props = {
@@ -29,10 +29,13 @@ export function ResultScreen({ match, onPlayAgain, onMenu }: Props) {
     onSuccess: async (record) => {
       removePendingMatch(record.matchId)
       saveLastMatchResult({
+        matchId: record.matchId,
+        playerId: record.playerId,
         score: record.score,
         durationSeconds: record.durationSeconds,
         reason: record.reason,
         finishedAt: record.finishedAt,
+        config: record.config,
         submitted: true,
       })
       setStatus('recorded')
@@ -41,10 +44,7 @@ export function ResultScreen({ match, onPlayAgain, onMenu }: Props) {
     },
     onError: () => {
       saveLastMatchResult({
-        score: match.score,
-        durationSeconds: match.durationSeconds,
-        reason: match.reason,
-        finishedAt: match.finishedAt,
+        ...match,
         submitted: false,
       })
       setStatus('failed')
@@ -55,6 +55,12 @@ export function ResultScreen({ match, onPlayAgain, onMenu }: Props) {
   mutateRef.current = mutation.mutate
   const submittedId = useRef<string | null>(null)
   useEffect(() => {
+    const last = loadLastMatchResult()
+    if (last?.matchId === match.matchId && last.submitted) {
+      setStatus('recorded')
+      submittedId.current = match.matchId
+      return
+    }
     if (submittedId.current === match.matchId) return
     submittedId.current = match.matchId
     mutateRef.current(match)
