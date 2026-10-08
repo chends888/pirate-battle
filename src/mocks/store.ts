@@ -16,8 +16,22 @@ function saveConfirmed(records: MatchRecord[]): void {
   localStorage.setItem(CONFIRMED_KEY, JSON.stringify(records))
 }
 
-export function listRankingRecords(): MatchRecord[] {
-  return [...rankingFixtures, ...loadConfirmed()].sort((a, b) => {
+export function sameMatchConfig(
+  left: MatchRecord['config'],
+  right: MatchRecord['config'],
+): boolean {
+  return (
+    left.sessionTimeSeconds === right.sessionTimeSeconds &&
+    left.enemySpawnIntervalSeconds === right.enemySpawnIntervalSeconds
+  )
+}
+
+export function listRankingRecords(config?: MatchRecord['config']): MatchRecord[] {
+  const all = [...rankingFixtures, ...loadConfirmed()]
+  const filtered = config
+    ? all.filter((record) => sameMatchConfig(record.config, config))
+    : all
+  return filtered.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score
     if (a.finishedAt !== b.finishedAt) {
       return a.finishedAt.localeCompare(b.finishedAt)

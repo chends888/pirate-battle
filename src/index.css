@@ -105,6 +105,23 @@ select {
   margin-bottom: 12px;
 }
 
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.pagination p {
+  margin: 0;
+}
+
+.pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 [role='alert'] {
   color: #ffb4a8;
 }

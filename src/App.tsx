@@ -39,6 +39,10 @@ export default function App() {
         <MainMenu
           onPlay={() => setScreen('match')}
           onOptions={() => setScreen('options')}
+          onRetryPending={(match) => {
+            setResult(match)
+            setScreen('result')
+          }}
         />
       ) : null}
     </QueryClientProvider>

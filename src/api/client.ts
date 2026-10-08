@@ -6,14 +6,20 @@ export const http = axios.create({
   timeout: 8000,
 })
 
-export async function fetchRanking(page = 1, pageSize = 5) {
+export const PAGE_SIZE = 5
+
+export async function fetchRanking(
+  page = 1,
+  pageSize = PAGE_SIZE,
+  config?: { sessionTimeSeconds: number; enemySpawnIntervalSeconds: number },
+) {
   const { data } = await http.get<Paginated<MatchRecord>>('/ranking', {
-    params: { page, pageSize },
+    params: { page, pageSize, ...config },
   })
   return data
 }
 
-export async function fetchMatchHistory(page = 1, pageSize = 5) {
+export async function fetchMatchHistory(page = 1, pageSize = PAGE_SIZE) {
   const { data } = await http.get<Paginated<MatchRecord>>('/history', {
     params: { page, pageSize },
   })

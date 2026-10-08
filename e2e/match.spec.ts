@@ -34,5 +34,6 @@ test('ending a match records it in ranking and history', async ({ page }) => {
   )
   await page.getByRole('button', { name: 'Main Menu' }).click()
   await page.getByRole('tab', { name: 'Match History' }).click()
-  await expect(page.getByText('Captain — 0 pts')).toBeVisible()
+  await expect(page.getByText(/0 pts/)).toBeVisible()
+  await expect(page.getByText('Time expired')).toBeVisible()
 })
